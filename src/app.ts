@@ -16,10 +16,14 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { Jwt } from './models/jwt';
 
 import indexRoute from './routes/index';
-import loginRoute from './routes/login';
-import apiRoute from './routes/api';
+import servicesRoute from './routes/view';
+
+import profileRoute from './routes/profile';
+import serviceRoute from './routes/services';
+import activitiesRoute from './routes/activities';
 
 // Assign router to the express.Router() instance
+
 const router: Router = Router();
 const app: express.Application = express();
 
@@ -32,6 +36,7 @@ app.set('view engine', 'ejs');
 
 //uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname,'../public','favicon.ico')));
+
 app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -93,9 +98,15 @@ let checkAuth = (req, res, next) => {
     });
 }
 
-app.use('/login', loginRoute);
-app.use('/api', checkAuth, apiRoute);
+// app.use('/login', loginRoute);
+// app.use('/api', checkAuth, apiRoute);
 app.use('/', indexRoute);
+app.use('/services', servicesRoute);
+
+app.use('/profile', profileRoute);
+app.use('/service', serviceRoute);
+app.use('/activities', activitiesRoute);
+
 
 //error handlers
 
