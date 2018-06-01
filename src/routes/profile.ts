@@ -35,8 +35,8 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
             obj_name.first_name = rs_name[0].first_name;
             obj_name.last_name = rs_name[0].last_name;
 
-            let obj_bloodgrp: any = {};
-            obj_bloodgrp.blood_group = rs_bloodgrp[0].bloodgrp;
+            // let obj_bloodgrp: any;
+            // obj_bloodgrp.blood_group = rs_bloodgrp[0].bloodgrp;
 
             let obj_allergy: any = [];
             obj_allergy.allergy = rs_allergy;
@@ -46,7 +46,7 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
 
             let objProfile: any = {};
             objProfile.name = obj_name;
-            objProfile.bloodgrp = obj_bloodgrp;
+            objProfile.bloodgrp = rs_bloodgrp[0].bloodgrp;
             objProfile.allergy = obj_allergy;
             objProfile.disease = obj_disease;
 

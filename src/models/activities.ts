@@ -4,7 +4,7 @@ export class ActivitiesModell {
 
     getPe(db: Knex, vn: any) {
         return db('sign as s')
-            .select('s.sign as PE')
+            .select('s.sign as pe')
             .where('vn', vn);
     }
 

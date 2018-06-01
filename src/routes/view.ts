@@ -15,13 +15,17 @@ router.get('/', (req: Request, res: Response) => {
     res.send({ ok: true, message: 'Welcome to Api Server!', code: HttpStatus.OK });
 });
 
-router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
+router.get('/view/:hn/:dateServe/:request_id/:register_id', async (req: Request, res: Response) => {
     let db = req.db;
     let hn: any = req.params.hn;
     let dateServe: any = req.params.dateServe;
+    let register_id: any = req.params.register_id;
+    let request_id: any = req.params.request_id;
     let profile: any = {};
     let hcode: any = '10957';
-    let register_id: any = '3333';
+    let hname: any = 'โรงพยาบาลตาลสุม';
+    // let register_id: any = '3333';
+    // let request_id: any = '2222';
 
     if (hn) {
         try {
@@ -35,8 +39,8 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
             obj_name.first_name = rs_name[0].first_name;
             obj_name.last_name = rs_name[0].last_name;
 
-            let obj_bloodgrp: any = {};
-            obj_bloodgrp.blood_group = rs_bloodgrp[0].bloodgrp;
+            // let obj_bloodgrp: any = {};
+            // obj_bloodgrp.blood_group = rs_bloodgrp[0].bloodgrp;
 
             let obj_allergy: any = [];
             obj_allergy.allergy = rs_allergy;
@@ -46,7 +50,7 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
 
             let objProfile: any = {};
             objProfile.name = obj_name;
-            objProfile.bloodgrp = obj_bloodgrp;
+            objProfile.blood_group = rs_bloodgrp[0].bloodgrp;
             objProfile.allergy = obj_allergy;
             objProfile.disease = obj_disease;
 
@@ -62,13 +66,15 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
             let activities: any = [];
             let pp: any = [];
             // obj_screening.screening = rs_screening;
+            let anc: any;
 
             for (let item of rs[0]) {
 
                 let objService: any = {};
                 let objActivities: any = {};
                 let objPp: any = {};
-                objService.date_serv = item.date;
+                let anc_obj: any;
+                objService.date_serve = item.date;
                 objService.time_serve = item.time;
                 objService.clinic = item.department;
                 objService.seq = item.seq;
@@ -83,18 +89,19 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
                 // let refer: any[] = await activitiesModell.getRefer(db, item.seq);
                 objActivities.refer = await activitiesModell.getRefer(db, item.seq);
                 let appointment: any[] = await activitiesModell.getAppointment(db, item.seq);
-                objActivities.appointment = appointment[0];
+                objActivities.appointment = appointment;
                 let lab: any[] = await activitiesModell.getLabs(db, item.seq);
                 objActivities.lab = lab[0];
 
                 // pp
-                let anc: any[] = await activitiesModell.getAnc(db, item.seq);
-                objPp.anc = anc[0];
+                anc = await activitiesModell.getAnc(db, item.seq);
+                objPp.anc = anc[0][0];
+
                 let vacine: any[] = await activitiesModell.getVacine(db, item.seq);
                 objPp.vacine = vacine[0];
 
                 pp.push(objPp); // add objPp to pp
-                objActivities.pp = pp // add pp to objActivities
+                objActivities.pp = pp[0] // add pp to objActivities
 
                 activities.push(objActivities);
                 objService.activities = activities;
@@ -107,8 +114,10 @@ router.get('/view/:hn/:dateServe', async (req: Request, res: Response) => {
                 res.send({
                     ok: true,
                     hcode: hcode,
+                    hname: hname,
                     hn: req.params.hn,
                     register_id: register_id,
+                    request_id: request_id,
                     // name: obj_name,
                     // allergy: rs_allergy,
                     // disease: rs_disease,
