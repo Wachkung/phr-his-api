@@ -5,10 +5,12 @@ import { Router, Request, Response } from 'express';
 import { ProfileModell } from '../models/profile';
 import { ServiceModell } from '../models/services';
 import { ActivitiesModell } from '../models/activities';
+import { OfficeModell } from '../models/office';
 
 const profileModell = new ProfileModell();
 const serviceModell = new ServiceModell();
 const activitiesModell = new ActivitiesModell();
+const officeModell = new OfficeModell();
 const router: Router = Router();
 
 router.get('/', (req: Request, res: Response) => {
@@ -135,6 +137,20 @@ router.get('/view/:hn/:dateServe/:request_id/:register_id', async (req: Request,
         }
     } else {
         res.send({ ok: false, error: 'Incorrect data!', code: HttpStatus.OK });
+    }
+});
+router.get('/office', async (req: Request, res: Response) => {
+    let db = req.db;
+
+    try {
+        let rs: any = await officeModell.getHospital(db);
+        if (rs.length) {
+            res.send({ ok: true, info: rs, code: HttpStatus.OK });
+        } else {
+            res.send({ ok: true, info: {}, code: HttpStatus.OK });
+        }
+    } catch (error) {
+        res.send({ ok: false, error: error.message, code: HttpStatus.INTERNAL_SERVER_ERROR });
     }
 });
 
